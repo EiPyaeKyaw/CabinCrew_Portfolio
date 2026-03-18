@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ei Kathryn | Junior Cabin Crew</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8f2ef;
+      --panel: #f2eae6;
+      --rose: #e59aa8;
+      --rose-deep: #c87a89;
+      --plum: #61283b;
+      --text: #3d2a2d;
+      --muted: #7b666b;
+      --white: #fffdfc;
+      --shadow: 0 22px 55px rgba(97, 40, 59, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(229,154,168,0.12), transparent 28%),
+        linear-gradient(180deg, #fcf8f6 0%, #f7f0eb 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 730px;
+      background: var(--panel);
+      border-bottom-left-radius: 42% 10%;
+      border-bottom-right-radius: 42% 10%;
+      z-index: -3;
+    }
+
+    .page::after {
+      content: "";
+      position: absolute;
+      right: -140px;
+      top: -80px;
+      width: 420px;
+      height: 420px;
+      background: linear-gradient(180deg, rgba(229,154,168,0.72), rgba(229,154,168,0.2));
+      border-radius: 48% 52% 47% 53% / 37% 39% 61% 63%;
+      transform: rotate(-10deg);
+      z-index: -2;
+    }
+
+    .airplane-cursor {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 3000;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.62) rotate(-90deg);
+      transition: opacity 0.25s ease, transform 0.18s ease;
+    }
+
+    .airplane-cursor::before {
+      content: none;
+    }
+
+    .airplane-cursor svg {
+      width: 34px;
+      height: 34px;
+      fill: #e07f93;
+      z-index: 1;
+      filter: drop-shadow(0 4px 8px rgba(97, 40, 59, 0.3));
+    }
+
+    .airplane-cursor.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(-90deg);
+    }
+
+    .airplane-cursor.click {
+      transform: translate(-50%, -50%) scale(0.9) rotate(-90deg);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      body,
+      a,
+      button {
+        cursor: none;
+      }
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      background: rgba(255, 253, 252, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(203, 162, 170, 0.15);
+      z-index: 999;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--plum);
+    }
+
+    .brand span {
+      color: var(--rose-deep);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .nav-links a {
+      color: inherit;
+      text-decoration: none;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--plum);
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(97, 40, 59, 0.15);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--plum);
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .menu-toggle:hover {
+      background: #fff;
+      border-color: rgba(97, 40, 59, 0.28);
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: currentColor;
+      position: relative;
+    }
+
+    .menu-toggle span::before,
+    .menu-toggle span::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 18px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    .menu-toggle span::before {
+      top: -6px;
+    }
+
+    .menu-toggle span::after {
+      top: 6px;
+    }
+
+    .hero {
+      padding: 34px 0 80px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 42px;
+      min-height: 74vh;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--rose-deep);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: var(--rose-deep);
+    }
+
+    h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(3rem, 5.5vw, 5.2rem);
+      line-height: 0.94;
+      color: var(--plum);
+      max-width: 700px;
+      margin-bottom: 22px;
+      font-weight: 800;
+    }
+    h2 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.9rem, 2.9vw, 2.8rem);
+      line-height: 1.1;
+      color: var(--plum);
+      max-width: 700px;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .hero-h1-word {
+      display: inline-block;
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 800;
+      font-size: clamp(2.2rem, 4.1vw, 3.1rem);
+      line-height: 1;
+      text-decoration: none;
+      white-space: nowrap;
+      vertical-align: baseline;
+    }
+
+    .hero p {
+      max-width: 590px;
+      color: var(--muted);
+      font-size: 1.03rem;
+      line-height: 1.85;
+      margin-bottom: 34px;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+      color: white;
+      box-shadow: 0 12px 30px rgba(200, 122, 137, 0.25);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.82);
+      color: var(--plum);
+      border: 1px solid rgba(97,40,59,0.08);
+    }
+
+    .heart {
+      margin-left: 8px;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 620px;
+    }
+
+    .visual-shape {
+      position: absolute;
+      width: min(500px, 100%);
+      height: 560px;
+      background: linear-gradient(180deg, #efb2bc, #e8a5b0 45%, #f3c5cd 100%);
+      border-radius: 42% 58% 32% 68% / 20% 24% 76% 80%;
+      right: 36px;
+      top: 48px;
+      opacity: 0.98;
+      box-shadow: var(--shadow);
+    }
+
+    .photo-card {
+      position: relative;
+      width: min(430px, 100%);
+      z-index: 2;
+      padding: 14px;
+      border-radius: 42px;
+    }
+
+    .photo-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      background: rgba(255,255,255,0.46);
+      backdrop-filter: blur(6px);
+      box-shadow: var(--shadow);
+      height: 510px;
+    }
+
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      transform: none;
+    }
+
+    .floating-tag {
+      position: absolute;
+      background: rgba(255,255,255,0.92);
+      color: var(--plum);
+      padding: 14px 18px;
+      border-radius: 18px;
+      box-shadow: 0 14px 34px rgba(60, 35, 39, 0.12);
+      font-size: 0.94rem;
+      line-height: 1.35;
+      backdrop-filter: blur(10px);
+    }
+
+    .tag-top {
+      left: -180px;
+      top: 0;
+    }
+
+    .tag-bottom {
+      left: auto;
+      right: -8px;
+      bottom: 34px;
+      top: auto;
+    }
+
+    .dots {
+      position: absolute;
+      right: -30px;
+      bottom: 140px;
+      display: grid;
+      gap: 12px;
+      z-index: 3;
+    }
+
+    .dots span {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #edd8d2;
+      display: block;
+    }
+
+    .dots span:nth-child(2) {
+      background: #d9a5aa;
+    }
+
+    .dots span:nth-child(3) {
+      background: var(--plum);
+    }
+
+    .landing-animate {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+      will-change: opacity, transform;
+    }
+
+    .page-ready .landing-animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .landing-fade-up-1 {
+      transition-delay: 0.08s;
+    }
+
+    .landing-fade-up-2 {
+      transition-delay: 0.2s;
+    }
+
+    .landing-fade-up-3 {
+      transition-delay: 0.32s;
+    }
+
+    .landing-fade-up-4 {
+      transition-delay: 0.44s;
+    }
+
+    .hero-visual.landing-animate {
+      transform: translateY(36px) scale(0.96);
+      transition: opacity 0.9s ease, transform 0.95s cubic-bezier(0.2, 0.75, 0.2, 1);
+    }
+
+    .page-ready .hero-visual.landing-animate {
+      transform: translateY(0) scale(1);
+    }
+
+    .page-ready .visual-shape {
+      animation: softFloat 6.8s ease-in-out 1.2s infinite;
+    }
+
+    @keyframes softFloat {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .landing-animate,
+      .hero-visual.landing-animate {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+
+      .page-ready .visual-shape {
+        animation: none;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .nav {
+        position: relative;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        width: min(280px, 88vw);
+        flex-direction: column;
+        gap: 0;
+        background: rgba(255, 253, 252, 0.98);
+        border: 1px solid rgba(203, 162, 170, 0.28);
+        border-radius: 14px;
+        box-shadow: 0 14px 32px rgba(97, 40, 59, 0.16);
+        overflow: hidden;
+      }
+
+      .nav-links a {
+        display: block;
+        padding: 14px 16px;
+      }
+
+      .nav.open .nav-links {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .hero-visual {
+        min-height: auto;
+      }
+
+      .visual-shape {
+        width: min(100%, 450px);
+        height: 520px;
+        right: 50%;
+        transform: translateX(50%);
+      }
+
+      .photo-card {
+        width: min(100%, 410px);
+      }
+
+      .photo-wrap {
+        height: 520px;
+      }
+
+      .tag-top {
+        left: 0;
+        top: 30px;
+      }
+
+      .tag-bottom {
+        right: 0;
+        bottom: 30px;
+      }
+
+      .dots {
+        right: 2px;
+        bottom: 88px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 28px, 1000px);
+      }
+
+      .page::before {
+        height: 860px;
+      }
+
+      h1 {
+        font-size: 3.25rem;
+      }
+
+      .hero p {
+        font-size: 0.98rem;
+      }
+
+      .photo-wrap {
+        height: 430px;
+      }
+
+      .photo-wrap img {
+        object-position: center top;
+      }
+
+      .floating-tag {
+        font-size: 0.86rem;
+        padding: 12px 14px;
+      }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      .airplane-cursor {
+        display: none;
+      }
+
+      body,
+      a,
+      button {
+        cursor: auto;
+      }
+    }
+    /* ABOUT */
+.about {
+  padding: 100px 0;
+}
+
+.about-title {
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--plum);
+  max-width: none;
+  width: 100%;
+  margin: 0 auto 10px;
+}
+
+.about-intro {
+  text-align: center;
+  color: var(--muted);
+  max-width: 720px;
+  margin: 0 auto 44px;
+  line-height: 1.8;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(260px, 340px) minmax(220px, 1fr);
+  gap: 26px;
+  align-items: center;
+}
+
+.about-side {
+  display: grid;
+  gap: 16px;
+}
+
+.about-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(203, 162, 170, 0.25);
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: 0 12px 24px rgba(120, 87, 93, 0.08);
+}
+
+.point {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.point-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1rem;
+  background: rgba(243, 195, 203, 0.45);
+  flex: 0 0 34px;
+}
+
+.point p {
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.about-image {
+  display: flex;
+  justify-content: center;
+}
+
+.frame {
+  position: relative;
+  width: 320px;
+  height: 410px;
+  border-radius: 48% 52% 56% 44% / 42% 58% 40% 60%;
+  padding: 11px;
+  background: linear-gradient(145deg, #f3c3cb, #f9dedf);
+  box-shadow: 0 20px 40px rgba(146, 108, 116, 0.22);
+}
+
+.frame::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 52% 48% 46% 54% / 56% 44% 58% 42%;
+  border: 2px solid rgba(229, 177, 186, 0.9);
+  z-index: -1;
+}
+
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: inherit;
+}
+/* SKILLS SECTION */
+.skills-section {
+  padding: 105px 0;
+  background: transparent;
+}
+
+.skills-header {
+  text-align: center;
+  margin-bottom: 46px;
+}
+
+.skills-subtitle {
+  font-size: 0.84rem;
+  letter-spacing: 0.14em;
+  color: var(--rose-deep);
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.skills-header h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--plum);
+  margin: 0 auto 14px;
+  max-width: none;
+  width: 100%;
+}
+
+.skills-line {
+  width: 72px;
+  height: 3px;
+  border-radius: 999px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, var(--rose-deep), #e8a1ab);
+}
+
+.skills-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.skills-box {
+  --accent: var(--rose-deep);
+  --accent-soft: rgba(243, 195, 203, 0.4);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(203, 162, 170, 0.25);
+  border-top: 3px solid var(--accent);
+  border-radius: 22px;
+  padding: 24px 20px 22px;
+  min-height: 300px;
+  box-shadow: 0 12px 24px rgba(120, 87, 93, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+}
+
+.skills-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 34px rgba(97, 40, 59, 0.14);
+}
+
+.skills-box-1 {
+  --accent: #b56e7d;
+  --accent-soft: rgba(229, 154, 168, 0.26);
+}
+
+.skills-box-2 {
+  --accent: #c78a55;
+  --accent-soft: rgba(226, 192, 153, 0.28);
+}
+
+.skills-box-3 {
+  --accent: #9c6a7f;
+  --accent-soft: rgba(215, 181, 197, 0.28);
+}
+
+.skills-box-4 {
+  --accent: #7a728f;
+  --accent-soft: rgba(189, 185, 209, 0.28);
+}
+
+.skills-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.skills-box h3 {
+  font-size: clamp(1.18rem, 1.8vw, 1.35rem);
+  line-height: 1.28;
+  color: var(--plum);
+  margin-bottom: 14px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skills-tags span {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: #f7f0eb;
+  border: 1px solid rgba(203, 162, 170, 0.3);
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.3;
+  transition: all 0.2s ease;
+}
+
+.skills-tags span:hover {
+  background: var(--accent-soft);
+  color: var(--plum);
+  border-color: var(--accent);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1180px) {
+  .skills-boxes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .skills-section {
+    padding: 80px 0;
+  }
+
+  .skills-boxes {
+    grid-template-columns: 1fr;
+  }
+
+  .skills-box {
+    min-height: auto;
+    padding: 20px 18px;
+  }
+
+  .skills-tags span {
+    font-size: 0.86rem;
+  }
+}
+@media (max-width: 980px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-side {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .about-left {
+    order: 2;
+  }
+
+  .about-image {
+    order: 1;
+    margin-bottom: 8px;
+  }
+
+  .about-right {
+    order: 3;
+  }
+}
+/* EXPERIENCE */
+.experience-section {
+  padding: 105px 0;
+  background: transparent;
+}
+
+.experience-header {
+  text-align: center;
+  margin-bottom: 46px;
+}
+
+.experience-subtitle {
+  font-size: 0.84rem;
+  letter-spacing: 0.14em;
+  color: var(--rose-deep);
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.experience-header h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--plum);
+  margin: 0 auto 14px;
+  max-width: none;
+  width: 100%;
+}
+
+.experience-line {
+  width: 72px;
+  height: 3px;
+  border-radius: 999px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, var(--rose-deep), #e8a1ab);
+}
+
+/* TIMELINE WRAPPER */
+.timeline {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+/* one shared vertical line */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 150px;
+  width: 3px;
+  background: linear-gradient(180deg, #e8a1ab, #c87a89);
+  border-radius: 999px;
+}
+
+/* each row */
+.timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  column-gap: 56px;
+  align-items: center;
+  margin-bottom: 34px;
+}
+
+/* left date */
+.timeline-marker {
+  position: relative;
+  text-align: right;
+}
+
+.timeline-marker span {
+  display: inline-block;
+  color: var(--rose-deep);
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+/* shared dot per item */
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: 143px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background: var(--plum);
+  border-radius: 50%;
+  box-shadow: 0 0 0 7px rgba(232, 161, 171, 0.18);
+  z-index: 2;
+}
+
+/* right content */
+.timeline-content {
+  position: relative;
+}
+
+.timeline-card {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 22px;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(203, 162, 170, 0.22);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: 0 12px 24px rgba(120, 87, 93, 0.08);
+  align-items: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.timeline-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 34px rgba(97, 40, 59, 0.14);
+}
+
+.timeline-image {
+  width: 100%;
+  height: 190px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f4e9e6;
+  flex-shrink: 0;
+}
+
+.timeline-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.timeline-card:hover .timeline-image img {
+  transform: scale(1.04);
+}
+
+.timeline-text h3 {
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+  color: var(--plum);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.timeline-text h4 {
+  font-size: 0.95rem;
+  color: var(--rose-deep);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.timeline-text p {
+  color: var(--muted);
+  line-height: 1.72;
+  font-size: 0.94rem;
+  margin: 0;
+}
+
+/* TABLET */
+@media (max-width: 980px) {
+  .timeline::before {
+    left: 18px;
+  }
+
+  .timeline-item {
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+    margin-bottom: 28px;
+    padding-left: 44px;
+  }
+
+  .timeline-item::before {
+    left: 10px;
+    top: 18px;
+    transform: none;
+  }
+
+  .timeline-marker {
+    text-align: left;
+  }
+
+  .timeline-marker span {
+    font-size: 0.92rem;
+  }
+
+  .timeline-card {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-image {
+    height: 240px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+  .experience-section {
+    padding: 80px 0;
+  }
+
+  .timeline-item {
+    padding-left: 38px;
+  }
+
+  .timeline::before {
+    left: 15px;
+  }
+
+  .timeline-item::before {
+    left: 7px;
+    width: 14px;
+    height: 14px;
+    box-shadow: 0 0 0 6px rgba(232, 161, 171, 0.18);
+  }
+
+  .timeline-card {
+    padding: 15px;
+    gap: 16px;
+  }
+
+  .timeline-image {
+    height: 190px;
+  }
+
+  .timeline-text h3 {
+    font-size: 1.12rem;
+  }
+
+  .timeline-text p {
+    font-size: 0.92rem;
+    line-height: 1.62;
+  }
+}
+
+/* RESPONSIVE
+@media (max-width: 980px) {
+  .experience-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .experience-image-box {
+    position: relative;
+    top: auto;
+  }
+
+  .experience-image-frame img {
+    height: 420px;
+  }
+}
+
+@media (max-width: 640px) {
+  .experience-section {
+    padding: 80px 0;
+  }
+
+  .timeline-card {
+    padding: 20px;
+  }
+
+  .timeline-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .timeline-card p {
+    font-size: 0.94rem;
+  }
+
+  .experience-image-frame img {
+    height: 340px;
+  }
+}
+
+/* MOBILE */
+/* @media (max-width: 900px) {
+  .timeline-item,
+  .timeline-item.left,
+  .timeline-item.right {
+    width: 100%;
+    left: 0;
+    text-align: left;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .timeline-year {
+    text-align: left;
+  }
+}
+
+@media (max-width: 640px) {
+  .frame {
+    width: 280px;
+    height: 360px;
+  }
+
+  .about-card {
+    padding: 14px 15px;
+  }
+} */ */
+
+/* WHY ME SECTION */
+.whyme-section {
+  padding: 105px 0;
+  background: transparent;
+}
+
+.whyme-title {
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--plum);
+  margin: 0 auto 10px;
+  max-width: none;
+  width: 100%;
+}
+
+.whyme-intro {
+  text-align: center;
+  color: var(--muted);
+  max-width: 720px;
+  margin: 0 auto 46px;
+  line-height: 1.8;
+}
+
+.whyme-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.whyme-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(203, 162, 170, 0.25);
+  border-radius: 22px;
+  padding: 24px 20px;
+  box-shadow: 0 12px 24px rgba(120, 87, 93, 0.08);
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.whyme-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 34px rgba(97, 40, 59, 0.14);
+}
+
+.whyme-icon {
+  font-size: 2.4rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.whyme-card h3 {
+  font-size: clamp(1.1rem, 1.6vw, 1.25rem);
+  color: var(--plum);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.whyme-card p {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 0.92rem;
+}
+
+/* CONTACT SECTION */
+.contact-section {
+  padding: 105px 0;
+  background: transparent;
+}
+
+.contact-title {
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--plum);
+  margin: 0 auto 10px;
+  max-width: none;
+  width: 100%;
+}
+
+.contact-intro {
+  text-align: center;
+  color: var(--muted);
+  max-width: 720px;
+  margin: 0 auto 46px;
+  line-height: 1.8;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.contact-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(203, 162, 170, 0.25);
+  border-radius: 22px;
+  padding: 28px 24px;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: 0 12px 24px rgba(120, 87, 93, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 34px rgba(97, 40, 59, 0.14);
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.contact-icon {
+  font-size: 2.8rem;
+  margin-bottom: 18px;
+  display: block;
+}
+
+.contact-card h3 {
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+  color: var(--plum);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.contact-card p {
+  color: var(--muted);
+  line-height: 1.68;
+  font-size: 0.94rem;
+  margin-bottom: 16px;
+}
+
+.contact-link {
+  display: inline-block;
+  color: var(--rose-deep);
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+}
+
+.contact-card:hover .contact-link {
+  color: var(--plum);
+  transform: translateX(4px);
+}
+
+/* FOOTER */
+.footer {
+  padding: 34px 0;
+  text-align: center;
+  border-top: 1px solid rgba(203, 162, 170, 0.2);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.footer p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1180px) {
+  .whyme-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .whyme-grid,
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .whyme-card,
+  .contact-card {
+    padding: 22px 18px;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="airplane-cursor" aria-hidden="true">
+    <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+      <path d="M21.5 2.5a1 1 0 0 0-1.02-.24L2.65 8.2a1 1 0 0 0 .06 1.89l7.17 2.39 2.39 7.17a1 1 0 0 0 1.89.06l5.94-17.83a1 1 0 0 0-.24-1.02zM13.1 16.4l-1.4-4.19a1 1 0 0 0-.63-.63L6.88 10.2l10.2-3.4-3.98 9.6z"/>
+    </svg>
+  </div>
+  <div class="page">
+    <header>
+      <div class="container nav">
+        <div class="brand">EI Kathryn<span></span></div>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+          <span></span>
+        </button>
+        <ul class="nav-links" id="site-nav">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About Me</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#whyme">Why Me</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <main class="hero" id="home">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow landing-animate landing-fade-up-1">Cabin Crew Portfolio</div>
+          <h1 class="landing-animate landing-fade-up-2">Hi there! </h1>
+            <h2 class="landing-animate landing-fade-up-2">My name is <span class="hero-h1-word">EI Kathryn</span>. </h2>
+            <h2 class="landing-animate landing-fade-up-3">I'm a <span class="hero-h1-word">Junior Cabin Crew</span>.</h2>
+          <p class="landing-animate landing-fade-up-3" style="max-width:540px; color:var(--muted); font-size:1.03rem; line-height:1.85; margin-bottom:34px; margin-top:16px;">
+            A warm, presentable, and people-first professional — bringing calm confidence, genuine hospitality, and a bright smile to every flight.
+          </p>
+
+          <div class="cta-row landing-animate landing-fade-up-4">
+            <a class="btn btn-primary" href="C:\Users\kathr\Documents\Kathryn\EI Kathryn\Cabin Crew CV Form.pdf">View My Resume</a>
+            <a class="btn btn-secondary" href="mailto:eipyae.1112004@gmail.com">Hire Me <span class="heart">♡</span></a>
+          </div>
+        </div>
+
+        <div class="hero-visual landing-animate landing-fade-up-3">
+          <div class="visual-shape"></div>
+
+          <div class="photo-card">
+            <div class="photo-wrap">
+              <img src="C:\Users\kathr\Documents\Kathryn\EI Kathryn\assets\Kath_Smiling.jpg" alt="Kathryn Ei">
+            </div>
+
+            <div class="floating-tag tag-top">
+              <strong>Personal Brand</strong><br>
+              Elegant, warm, presentable
+            </div>
+
+            <div class="floating-tag tag-bottom">
+              <strong>Career Direction</strong><br>
+              Ready to grow in cabin service
+            </div>
+
+            <div class="dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- ABOUT ME -->
+    <section class="about" id="about">
+      <div class="container">
+        <h2 class="about-title">About Me</h2>
+        <p class="about-intro">
+            A naturally curious individual driven by growth, discovery, and the pursuit of becoming better with every experience.
+        </p>
+
+        <div class="about-grid">
+          <div class="about-side about-left">
+            <div class="about-card">
+              <div class="point">
+                <span class="point-icon">✈️</span>
+                <p>I am quick to learn and able to adapt effectively to new environments and challenges.</p>
+              </div>
+            </div>
+            <div class="about-card">
+              <div class="point">
+                <span class="point-icon">🌍</span>
+                <p>I am genuinely interested in different cultures and enjoy learning from diverse perspectives.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-image">
+            <div class="frame">
+              <img src="C:\Users\kathr\Documents\Kathryn\EI Kathryn\assets\Kath_W_Laptop.jpg" alt="Kathryn Ei">
+            </div>
+          </div>
+
+          <div class="about-side about-right">
+            <div class="about-card">
+              <div class="point">
+                <span class="point-icon">💫</span>
+                <p>I combine creativity with critical thinking, allowing for thoughtful and flexible problem-solving.</p>
+              </div>
+            </div>
+            <div class="about-card">
+              <div class="point">
+                <span class="point-icon">🤝</span>
+                <p>I maintain a consistent commitment to growth while carrying myself with professionalism and a positive mindset.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- SKILLS & STRENGTHS -->
+    <section class="skills-section" id="skills">
+    <div class="container">
+        <div class="skills-header">
+        <p class="skills-subtitle">✦ WHAT I BRING</p>
+        <h2>Skills & Strengths</h2>
+        <div class="skills-line"></div>
+        </div>
+
+        <div class="skills-boxes">
+        <div class="skills-box skills-box-1">
+            <div class="skills-icon">💬</div>
+            <h3>Communication & Service</h3>
+            <div class="skills-tags">
+            <span>Professional Communication</span>
+            <span>Cultural Awareness</span>
+            <span>Customer Relations</span>
+            <span>Guest Satisfaction</span>
+            </div>
+        </div>
+
+        <div class="skills-box skills-box-2">
+            <div class="skills-icon">⚡</div>
+            <h3>Operational Excellence</h3>
+            <div class="skills-tags">
+            <span>Fast-Paced Adaptability</span>
+            <span>Problem Solving</span>
+            <span>Attention to Detail</span>
+            <span>Cash Handling</span>
+            </div>
+        </div>
+
+        <div class="skills-box skills-box-3">
+            <div class="skills-icon">👥</div>
+            <h3>Teamwork & Leadership</h3>
+            <div class="skills-tags">
+            <span>Team Collaboration</span>
+            <span>Leadership</span>
+            <span>Coordination</span>
+            <span>Class Representative</span>
+            </div>
+        </div>
+
+        <div class="skills-box skills-box-4">
+            <div class="skills-icon">🌍</div>
+            <h3>Languages</h3>
+            <div class="skills-tags">
+            <span>English [Fluent]</span>
+            <span>Burmese [Native]</span>
+            <span>Japanese [N4]</span>
+            </div>
+        </div>
+        </div>
+    </div>
+    </section>
+    <!-- WORK EXPERIENCE -->
+    <section class="experience-section" id="experience">
+        <div class="container">
+            <div class="experience-header">
+            <p class="experience-subtitle">✦ MY JOURNEY</p>
+            <h2>Work Experience</h2>
+            <div class="experience-line"></div>
+            </div>
+
+            <div class="timeline">
+
+            <div class="timeline-item">
+                <div class="timeline-marker">
+                <span>2020 – 2023</span>
+                </div>
+                <div class="timeline-content">
+                <div class="timeline-card">
+                    <div class="timeline-image">
+                    <img src="C:\Users\kathr\Documents\Kathryn\EI Kathryn\assets\SalesManager.jpg" alt="Sales Manager at Family Business">
+                    </div>
+                    <div class="timeline-text">
+                    <h3>Sales Manager</h3>
+                    <h4>Family Business</h4>
+                    <p>
+                        Managed daily customer interactions, handled cash and receipts accurately, and supported smooth business operations while maintaining a welcoming and professional service experience.
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">
+                <span>2023 – 2024</span>
+                </div>
+                <div class="timeline-content">
+                <div class="timeline-card">
+                    <div class="timeline-image">
+                    <img src="C:\Users\kathr\Documents\Kathryn\EI Kathryn\assets\Banquet.jpg" alt="Banquet Service Staff at Conrad Hotel">
+                    </div>
+                    <div class="timeline-text">
+                    <h3>Banquet Service Staff</h3>
+                    <h4>Conrad Hotel, Singapore</h4>
+                    <p>
+                        Supported banquet and event service by preparing dining setups, serving guests attentively, and ensuring a smooth and polished experience during formal functions.
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">
+                <span>2024 – 2025</span>
+                </div>
+                <div class="timeline-content">
+                <div class="timeline-card">
+                    <div class="timeline-image">
+                    <img src="C:\Users\kathr\Documents\Kathryn\EI Kathryn\assets\Quincy.jpg" alt="F&B Service Staff at Quincy Hotel">
+                    </div>
+                    <div class="timeline-text">
+                    <h3>F&amp;B Service Staff</h3>
+                    <h4>Quincy Hotel, Singapore</h4>
+                    <p>
+                        Welcomed guests, assisted with seating and meal service, and worked closely with the team to create a pleasant and efficient dining environment during breakfast and dinner operations.
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-marker">
+                <span>Mar 2025 – Sep 2025</span>
+                </div>
+                <div class="timeline-content">
+                <div class="timeline-card">
+                    <div class="timeline-image">
+                    <img src="C:\Users\kathr\Documents\Kathryn\EI Kathryn\assets\RPA.jpg" alt="RPA Intern at KLP LLP">
+                    </div>
+                    <div class="timeline-text">
+                    <h3>RPA Intern</h3>
+                    <h4>KLP LLP</h4>
+                    <p>
+                        Contributed to project discussions, supported workflow improvement efforts, and adapted quickly to evolving requirements in a fast-paced professional environment.
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY ME -->
+    <section class="whyme-section" id="whyme">
+      <div class="container">
+        <h2 class="whyme-title">Why Me</h2>
+        <p class="whyme-intro">
+          As a future cabin crew professional, I bring more than just professional skills—I bring genuine care, adaptability, and a commitment to excellence that makes every passenger journey memorable.
+        </p>
+
+        <div class="whyme-grid">
+          <div class="whyme-card">
+            <div class="whyme-icon">💡</div>
+            <h3>Problem Solving</h3>
+            <p>I solve problems calmly and quickly, shaped by project work where I handled urgent changes, fixed errors, and kept tasks moving with practical solutions.</p>
+          </div>
+
+          <div class="whyme-card">
+            <div class="whyme-icon">🎯</div>
+            <h3>Quick Learner</h3>
+            <p>With a proven ability to master new skills and procedures quickly, I am ready to hit the ground running in a dynamic cabin crew environment.</p>
+          </div>
+
+          <div class="whyme-card">
+            <div class="whyme-icon">🌟</div>
+            <h3>Positive Energy</h3>
+            <p>I bring warmth and optimism to every interaction, creating a welcoming atmosphere that passengers and crew appreciate.</p>
+          </div>
+
+          <div class="whyme-card">
+            <div class="whyme-icon">🤲</div>
+            <h3>Service-Oriented</h3>
+            <p>I genuinely enjoy helping others and take pride in delivering thoughtful, attentive service with a smile.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT ME -->
+    <section class="contact-section" id="contact">
+      <div class="container">
+        <h2 class="contact-title">Let's Connect</h2>
+        <p class="contact-intro">
+          I'd love to hear from you! Feel free to reach out via any of these channels.
+        </p>
+
+        <div class="contact-grid">
+          <a href="https://www.linkedin.com/in/ei-pyae-kyaw" target="_blank" class="contact-card">
+            <div class="contact-icon">💼</div>
+            <h3>LinkedIn</h3>
+            <p>Connect professionally and see my full career background</p>
+            <span class="contact-link">Visit Profile →</span>
+          </a>
+
+          <a href="https://wa.me/qr/H4SCQV5JEI37I1" target="_blank" class="contact-card">
+            <div class="contact-icon">💬</div>
+            <h3>WhatsApp</h3>
+            <p>Send me a quick message anytime — I respond promptly</p>
+            <span class="contact-link">Send Message →</span>
+          </a>
+
+          <a href="mailto:eipyae.1112004@gmail.com" class="contact-card">
+            <div class="contact-icon">✉️</div>
+            <h3>Email</h3>
+            <p>Drop me an email and I'll get back to you soon</p>
+            <span class="contact-link">Send Email →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <p>© 2026 EI Kathryn. All rights reserved. | Junior Cabin Crew Professional.</p>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const nav = document.querySelector('.nav');
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const airplaneCursor = document.querySelector('.airplane-cursor');
+
+    if (menuToggle && nav) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = nav.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          nav.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    window.addEventListener('load', () => {
+      document.body.classList.add('page-ready');
+    });
+
+    if (airplaneCursor && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      let targetX = window.innerWidth * 0.5;
+      let targetY = window.innerHeight * 0.5;
+      let currentX = targetX;
+      let currentY = targetY;
+
+      const trackMouse = (event) => {
+        targetX = event.clientX;
+        targetY = event.clientY;
+        airplaneCursor.classList.add('active');
+      };
+
+      const hideCursor = () => {
+        airplaneCursor.classList.remove('active');
+      };
+
+      window.addEventListener('mousemove', trackMouse);
+      window.addEventListener('mouseleave', hideCursor);
+      window.addEventListener('mousedown', () => {
+        airplaneCursor.classList.add('click');
+      });
+      window.addEventListener('mouseup', () => {
+        airplaneCursor.classList.remove('click');
+      });
+
+      const animateCursor = () => {
+        currentX += (targetX - currentX) * 0.22;
+        currentY += (targetY - currentY) * 0.22;
+
+        airplaneCursor.style.left = currentX + 'px';
+        airplaneCursor.style.top = currentY + 'px';
+
+        window.requestAnimationFrame(animateCursor);
+      };
+
+      window.requestAnimationFrame(animateCursor);
+    }
+  </script>
+</body>
+</html>
